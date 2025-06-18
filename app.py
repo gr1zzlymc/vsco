@@ -7,9 +7,14 @@ from io import BytesIO
 import threading
 import time
 from vscoscrape.vscoscrape import Scraper
+import vscoscrape.vscoscrape as vscoscrape_module
 
 app = Flask(__name__)
 app.secret_key = 'vsco-scraper-secret-key-change-in-production'
+
+# Initialize global variables that the VSCO scraper expects
+vscoscrape_module.cache = None
+vscoscrape_module.latestCache = None
 
 # Store active jobs
 active_jobs = {}
