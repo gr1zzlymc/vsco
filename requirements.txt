@@ -1,0 +1,6 @@
+Flask==2.3.3
+tqdm==4.66.1
+requests==2.31.0
+beautifulsoup4==4.12.2
+Werkzeug==2.3.7
+gunicorn==21.2.0 

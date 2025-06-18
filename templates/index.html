@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body p-5">
+        <h3 class="text-center mb-4">
+            <i class="fas fa-download"></i> Download VSCO Content
+        </h3>
+        <p class="text-center text-muted mb-4">
+            Enter a VSCO username to download their content. All files will be packaged in a ZIP file for download.
+        </p>
+        
+        <form method="POST" action="{{ url_for('scrape') }}">
+            <div class="mb-4">
+                <label for="username" class="form-label">
+                    <i class="fas fa-user"></i> VSCO Username
+                </label>
+                <input type="text" class="form-control" id="username" name="username" 
+                       placeholder="Enter VSCO username (e.g., johndoe)" required>
+            </div>
+            
+            <div class="mb-4">
+                <label for="scrape_type" class="form-label">
+                    <i class="fas fa-list"></i> Content Type
+                </label>
+                <select class="form-select" id="scrape_type" name="scrape_type" style="border-radius: 25px; border: 2px solid #e0e0e0; padding: 12px 20px;">
+                    <option value="images">Images Only</option>
+                    <option value="journal">Journal Posts</option>
+                    <option value="collection">Collections</option>
+                    <option value="profile">Profile Picture</option>
+                    <option value="all">Everything (Images + Journals + Collections)</option>
+                </select>
+            </div>
+            
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-download"></i> Start Scraping
+                </button>
+            </div>
+        </form>
+        
+        <div class="mt-4 p-3" style="background-color: #f8f9fa; border-radius: 15px;">
+            <h6><i class="fas fa-info-circle"></i> How it works:</h6>
+            <ul class="mb-0 small">
+                <li>Enter any public VSCO username</li>
+                <li>Choose what type of content to download</li>
+                <li>Wait for processing to complete</li>
+                <li>Download your ZIP file containing all media</li>
+            </ul>
+        </div>
+        
+        <div class="mt-3 text-center">
+            <small class="text-muted">
+                <i class="fas fa-shield-alt"></i> Only public VSCO profiles are supported
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %} 

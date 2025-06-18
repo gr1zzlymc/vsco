@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body p-5 text-center">
+        <div id="processing-status">
+            <h3 class="mb-4">
+                <i class="fas fa-spinner fa-spin text-primary"></i> Processing...
+            </h3>
+            <h5 class="mb-3">Scraping {{ scrape_type }} from @{{ username }}</h5>
+            <p class="text-muted">This may take a few minutes depending on the amount of content.</p>
+            
+            <div class="progress mb-4" style="height: 20px; border-radius: 25px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                     role="progressbar" style="width: 100%; background: linear-gradient(45deg, #667eea, #764ba2);">
+                </div>
+            </div>
+            
+            <div class="alert alert-info" style="border-radius: 15px;">
+                <i class="fas fa-info-circle"></i> 
+                Please keep this page open. You'll be notified when the download is ready.
+            </div>
+        </div>
+        
+        <div id="completed-status" style="display: none;">
+            <h3 class="mb-4 text-success">
+                <i class="fas fa-check-circle"></i> Complete!
+            </h3>
+            <p class="mb-4">Your VSCO content has been scraped successfully.</p>
+            <a href="{{ url_for('download', job_id=job_id) }}" class="btn btn-success btn-lg">
+                <i class="fas fa-download"></i> Download ZIP File
+            </a>
+            <br><br>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Scrape Another Profile
+            </a>
+        </div>
+        
+        <div id="error-status" style="display: none;">
+            <h3 class="mb-4 text-danger">
+                <i class="fas fa-exclamation-circle"></i> Error
+            </h3>
+            <p class="mb-4" id="error-message">Something went wrong while processing your request.</p>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Try Again
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function checkStatus() {
+    fetch('/status/{{ job_id }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'completed') {
+                document.getElementById('processing-status').style.display = 'none';
+                document.getElementById('completed-status').style.display = 'block';
+            } else if (data.status === 'error') {
+                document.getElementById('processing-status').style.display = 'none';
+                document.getElementById('error-status').style.display = 'block';
+                document.getElementById('error-message').textContent = data.error || 'An unknown error occurred.';
+            } else if (data.status === 'processing') {
+                // Continue checking
+                setTimeout(checkStatus, 3000);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            setTimeout(checkStatus, 5000); // Retry on network error
+        });
+}
+
+// Start checking status
+setTimeout(checkStatus, 3000);
+</script>
+{% endblock %} 
